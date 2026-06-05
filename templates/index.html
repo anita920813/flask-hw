@@ -1,45 +1,79 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 自我介紹產生器</title>
-    <!-- 引入我們的樣式表 -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{{ info.name }} 的 AI 整合網站</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased">
 
-    <div class="container">
-        <h2><i class="fa-solid fa-wand-magic-sparkles"></i> 自我介紹產生器</h2>
-        <p class="subtitle">輸入你的基本資料，讓後端 Flask 幫你動態產生介紹吧！</p>
-        
-        <!-- 表單容器：對照簡報使用 method="POST" -->
-        <form method="POST">
-            <div class="form-group">
-                <label for="name">您的姓名：</label>
-                <!-- 對照簡報：此處 name="name" 必須與 Python 的 request.form.get("name") 完全一致 -->
-                <input type="text" id="name" name="name" placeholder="例如：謝宜蓁" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="hobby">您的興趣：</label>
-                <!-- 此處 name="hobby" 必須與 Python 的 request.form.get("hobby") 完全一致 -->
-                <input type="text" id="hobby" name="hobby" placeholder="例如：寫網頁、旅行、看電影" required>
-            </div>
-            
-            <!-- 對照簡報常犯錯誤：button 的 type 必須是 "submit" 才會觸發送出 -->
-            <button type="submit" class="btn-submit">動態產生介紹 🚀</button>
-        </form>
-
-        <!-- 對照簡報：如果有產生訊息，才把結果區塊顯示出來 -->
-        {% if message %}
-        <div class="result-box">
-            <h3>生成結果：</h3>
-            <p>{{ message }}</p>
+    <header class="max-w-4xl mx-auto pt-20 pb-12 px-6 text-center border-b border-slate-800">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 text-teal-400 text-xs font-semibold uppercase tracking-wider mb-4">
+            <i class="fa-solid fa-code"></i> Portfolio & AI Lab
         </div>
-        {% endif %}
-    </div>
+        <h1 class="text-4xl font-extrabold text-white tracking-tight sm:text-5xl mb-4 font-serif">
+            Hello, I'm <span class="text-teal-400">{{ info.name }}</span>
+        </h1>
+        <p class="text-xl text-slate-400 font-medium mb-2">{{ info.title }}</p>
+        <p class="max-w-xl mx-auto text-sm text-slate-500 leading-relaxed">{{ info.bio }}</p>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <section class="bg-slate-800/50 backdrop-blur border border-slate-700/60 p-8 rounded-3xl shadow-xl">
+            <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-comment-dots text-teal-400"></i> AI 智囊對話
+            </h2>
+            <p class="text-xs text-slate-400 mb-6">透過後端傳送 Prompt 給 OpenAI，即時獲取文字解答。</p>
+            
+            <form method="POST" class="space-y-4">
+                <input type="hidden" name="action_type" value="text">
+                <textarea name="prompt" rows="3" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-teal-500" placeholder="問點什麼吧... 例如：請幫我寫一首關於旅行的詩" required></textarea>
+                <button type="submit" class="w-full bg-teal-600 hover:bg-teal-500 text-white font-semibold py-3 px-4 rounded-xl transition-all text-sm">
+                    發送對話指令 <i class="fa-solid fa-paper-plane ml-1"></i>
+                </button>
+            </form>
+
+            {% if text_result %}
+            <div class="mt-6 p-4 bg-slate-900/60 border-l-4 border-teal-500 rounded-r-xl">
+                <h4 class="text-xs font-bold text-teal-400 uppercase tracking-wider mb-2">AI 回應：</h4>
+                <p class="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">{{ text_result }}</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <section class="bg-slate-800/50 backdrop-blur border border-slate-700/60 p-8 rounded-3xl shadow-xl">
+            <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles text-orange-400"></i> DALL-E 圖片生成
+            </h2>
+            <p class="text-xs text-slate-400 mb-6">輸入畫面描述（建議用英文），由 AI 為你現場繪製高解析度圖像。</p>
+            
+            <form method="POST" class="space-y-4">
+                <input type="hidden" name="action_type" value="image">
+                <textarea name="prompt" rows="3" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-orange-500" placeholder="描述你想看見的畫面... 例如：A futuristic city with flying cars, cyber punk style, hyper realistic" required></textarea>
+                <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-semibold py-3 px-4 rounded-xl transition-all text-sm">
+                    現場繪製圖片 <i class="fa-solid fa-paint-brush ml-1"></i>
+                </button>
+            </form>
+
+            {% if image_result %}
+            <div class="mt-6 text-center">
+                <h4 class="text-xs font-bold text-orange-400 uppercase tracking-wider mb-3 text-left">生成畫作：</h4>
+                <div class="inline-block relative overflow-hidden rounded-2xl shadow-2xl border border-slate-700">
+                    <img src="{{ image_result }}" alt="AI 生成圖片" class="max-w-full h-auto max-h-72 object-contain">
+                </div>
+                <p class="text-xs text-slate-500 mt-2"><i class="fa-solid fa-info-circle"></i> 圖片由 OpenAI DALL-E 3 即時生成</p>
+            </div>
+            {% endif %}
+        </section>
+
+    </main>
+
+    <footer class="text-center text-xs text-slate-600 py-12 border-t border-slate-800/60 mt-12">
+        <p>&copy; 2026 {{ info.name }} AI Workspace. All Rights Reserved.</p>
+    </footer>
 
 </body>
 </html>
