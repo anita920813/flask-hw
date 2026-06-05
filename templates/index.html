@@ -4,15 +4,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask 網頁</title>
-    <!-- 對照簡報：使用 url_for 引入 static 資料夾底下的 style.css -->
+    <title>AI 自我介紹產生器</title>
+    <!-- 引入我們的樣式表 -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div style="text-align: center; margin-top: 50px; font-family: sans-serif;">
-        <!-- 使用 Jinja2 模板語法，把後端傳來的名字顯示出來 -->
-        <h1>你好，{{ name }}！</h1>
-        <p>這是 index.html 頁面，成功透過 Flask 後端渲染囉！</p>
+
+    <div class="container">
+        <h2><i class="fa-solid fa-wand-magic-sparkles"></i> 自我介紹產生器</h2>
+        <p class="subtitle">輸入你的基本資料，讓後端 Flask 幫你動態產生介紹吧！</p>
+        
+        <!-- 表單容器：對照簡報使用 method="POST" -->
+        <form method="POST">
+            <div class="form-group">
+                <label for="name">您的姓名：</label>
+                <!-- 對照簡報：此處 name="name" 必須與 Python 的 request.form.get("name") 完全一致 -->
+                <input type="text" id="name" name="name" placeholder="例如：謝宜蓁" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="hobby">您的興趣：</label>
+                <!-- 此處 name="hobby" 必須與 Python 的 request.form.get("hobby") 完全一致 -->
+                <input type="text" id="hobby" name="hobby" placeholder="例如：寫網頁、旅行、看電影" required>
+            </div>
+            
+            <!-- 對照簡報常犯錯誤：button 的 type 必須是 "submit" 才會觸發送出 -->
+            <button type="submit" class="btn-submit">動態產生介紹 🚀</button>
+        </form>
+
+        <!-- 對照簡報：如果有產生訊息，才把結果區塊顯示出來 -->
+        {% if message %}
+        <div class="result-box">
+            <h3>生成結果：</h3>
+            <p>{{ message }}</p>
+        </div>
+        {% endif %}
     </div>
+
 </body>
 </html>
