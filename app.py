@@ -1,27 +1,54 @@
 # app.py
 from flask import Flask, render_template, request
+from openai import OpenAI
+import os
 
 app = Flask(__name__)
 
-# 對照簡報：methods 必須包含 GET（打開頁面）與 POST（送出表單）
+# 對照簡報安全觀念：從雲端環境變數讀取密鑰
+# 注意：等一下去 Render 後台記得要新增這個變數喔！
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 @app.route("/", methods=["GET", "POST"])
 def home():
-    message = ""
+    # 1. 個人履歷設定（對照簡報個人化需求）
+    my_info = {
+        "name": "謝宜蓁",
+        "title": "Web Developer & IoT Engineer",
+        "bio": "熱衷於 5G 通訊、物聯網整合與 AI 應用的 Master 研發學生。擅長用程式碼解決生活中的實際問題！"
+    }
     
-    # 對照簡報：當使用者點擊按鈕送出表單時
+    ai_text_response = ""
+    ai_image_url = ""
+    
+    # 2. 處理前端送來的 AI 請求
     if request.method == "POST":
-        # 使用 request.form.get() 讀取前端 input 的 name 屬性值
-        username = request.form.get("name")
-        user_hobby = request.form.get("hobby")
+        action_type = request.form.get("action_type")
+        user_prompt = request.form.get("prompt")
         
-        # 組合文字：做出個人化的自我介紹
-        if username and user_hobby:
-            message = f"✨ 大家好，我是 {username}！我的興趣是 {user_hobby}。很高興認識大家！"
-        else:
-            message = "⚠️ 填寫不完整，請輸入姓名與興趣喔！"
-            
-    # 將組合好的自我介紹字串（message）傳給 index.html 顯示
-    return render_template("index.html", message=message)
+        if user_prompt:
+            try:
+                # 【文字生成功能】對照簡報最小範例
+                if action_type == "text":
+                    response = client.chat.completions.create(
+                        model="gpt-4o-mini", # 採用官方目前標準輕量模型
+                        messages=[{"role": "user", "content": user_prompt}]
+                    )
+                    ai_text_response = response.choices[0].message.content
+                
+                # 【圖片生成功能】對照簡報 Image-Generator
+                elif action_type == "image":
+                    response = client.images.generate(
+                        model="dall-e-3",
+                        prompt=user_prompt,
+                        n=1,
+                        size="1024x1024"
+                    )
+                    ai_image_url = response.data[0].url
+            except Exception as e:
+                ai_text_response = f"❌ 呼叫 AI 時發生錯誤，請檢查 API Key 是否正確設定。錯誤訊息: {str(e)}"
+
+    return render_template("index.html", info=my_info, text_result=ai_text_response, image_result=ai_image_url)
 
 if __name__ == "__main__":
     app.run(debug=True)
