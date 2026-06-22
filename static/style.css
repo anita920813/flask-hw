@@ -1,105 +1,131 @@
-/* static/style.css */
+/* 全域文青風中文字體優化 */
 body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    background-color: #f0f4f8;
-    color: #334155;
+    font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+    margin: 0;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    margin: 0;
 }
 
+/* 主白色卡片容器 */
 .container {
-    background-color: #ffffff;
+    background: #ffffff;
     padding: 35px;
     border-radius: 20px;
-    shadow-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    max-width: 600px;
     width: 100%;
-    max-width: 450px;
-    border: 1px solid #e2e8f0;
+    box-sizing: border-box; /* 確保 padding 不會撐破寬度 */
 }
 
-h2 {
-    color: #0f766e;
-    margin-top: 0;
-    margin-bottom: 8px;
-    font-size: 24px;
-    text-align: center;
+header h1 {
+    color: #333333;
+    margin-bottom: 5px;
 }
 
 .subtitle {
-    font-size: 13px;
-    color: #64748b;
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.form-group {
+    color: #888888;
+    font-size: 0.9rem;
     margin-bottom: 20px;
 }
 
-label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 8px;
-    font-size: 14px;
-    color: #475569;
+.weather-badge {
+    background: #f4f6f6;
+    padding: 10px 15px;
+    border-radius: 30px;
+    display: inline-block;
+    font-size: 0.9rem;
+    color: #555555;
+    margin-bottom: 20px;
 }
 
-input[type="text"] {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
-    font-size: 14px;
-    box-sizing: border-box;
-    transition: all 0.2s;
-}
-
-input[type="text"]:focus {
+/* 下拉選單高級化 */
+select {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid #cccccc;
+    font-size: 0.9rem;
     outline: none;
-    border-color: #0f766e;
-    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
 }
 
-.btn-submit {
+/* 🟢 按鈕大軍網格整容 */
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+}
+
+/* 文青風心情按鈕基礎樣式 */
+.mood-btn {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    padding: 12px 8px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: #444444;
+    cursor: pointer;
+    transition: all 0.3s ease; /* 絲滑的過渡動畫 */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+/* 當滑鼠滑過按鈕時的「呼吸微浮空」效果 */
+.mood-btn:hover {
+    background: #34495e;
+    color: #ffffff;
+    transform: translateY(-3px); /* 往上飄起 3 像素 */
+    box-shadow: 0 5px 15px rgba(52, 73, 94, 0.2);
+}
+
+/* 🧠 深度專注特殊按鈕整形 */
+.focus-zone {
+    margin-top: 20px;
+}
+
+.focus-btn {
     width: 100%;
-    background-color: #0f766e;
+    background: #2c3e50;
     color: white;
     border: none;
     padding: 14px;
-    font-size: 16px;
-    font-weight: 600;
-    border-radius: 10px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s;
-    margin-top: 10px;
+    transition: all 0.3s ease;
 }
 
-.btn-submit:hover {
-    background-color: #115e59;
+.focus-btn:hover {
+    background: #e74c3c; /* 懸浮時變成熱血的紅色 */
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
 }
 
-.result-box {
+/* 🟥 完美解決 YouTube 超出框框的響應式設計（RWD） */
+.video-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 完美的 16:9 螢幕比例黃金密碼 */
+    height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    margin-top: 15px;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.player-section h3 {
+    color: #555555;
+    font-size: 1rem;
     margin-top: 25px;
-    padding: 15px 20px;
-    background-color: #f0fdfa;
-    border-left: 5px solid #0f766e;
-    border-radius: 8px;
-}
-
-.result-box h3 {
-    margin: 0 0 5px 0;
-    font-size: 14px;
-    color: #115e59;
-}
-
-.result-box p {
-    margin: 0;
-    font-size: 15px;
-    line-height: 1.5;
-    color: #0f766e;
-    font-weight: 500;
 }
