@@ -3,77 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ info.name }} 的 AI 整合網站</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>聽見下雨的聲音 - 專屬生活 BGM 平台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans antialiased">
+<body style="background-color: {{ bg_color }}; transition: background-color 0.8s ease;">
 
-    <header class="max-w-4xl mx-auto pt-20 pb-12 px-6 text-center border-b border-slate-800">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 text-teal-400 text-xs font-semibold uppercase tracking-wider mb-4">
-            <i class="fa-solid fa-code"></i> Portfolio & AI Lab
-        </div>
-        <h1 class="text-4xl font-extrabold text-white tracking-tight sm:text-5xl mb-4 font-serif">
-            Hello, I'm <span class="text-teal-400">{{ info.name }}</span>
-        </h1>
-        <p class="text-xl text-slate-400 font-medium mb-2">{{ info.title }}</p>
-        <p class="max-w-xl mx-auto text-sm text-slate-500 leading-relaxed">{{ info.bio }}</p>
-    </header>
-
-    <main class="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-        
-        <section class="bg-slate-800/50 backdrop-blur border border-slate-700/60 p-8 rounded-3xl shadow-xl">
-            <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
-                <i class="fa-solid fa-comment-dots text-teal-400"></i> AI 智囊對話
-            </h2>
-            <p class="text-xs text-slate-400 mb-6">透過後端傳送 Prompt 給 OpenAI，即時獲取文字解答。</p>
-            
-            <form method="POST" class="space-y-4">
-                <input type="hidden" name="action_type" value="text">
-                <textarea name="prompt" rows="3" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-teal-500" placeholder="問點什麼吧... 例如：請幫我寫一首關於旅行的詩" required></textarea>
-                <button type="submit" class="w-full bg-teal-600 hover:bg-teal-500 text-white font-semibold py-3 px-4 rounded-xl transition-all text-sm">
-                    發送對話指令 <i class="fa-solid fa-paper-plane ml-1"></i>
-                </button>
-            </form>
-
-            {% if text_result %}
-            <div class="mt-6 p-4 bg-slate-900/60 border-l-4 border-teal-500 rounded-r-xl">
-                <h4 class="text-xs font-bold text-teal-400 uppercase tracking-wider mb-2">AI 回應：</h4>
-                <p class="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">{{ text_result }}</p>
+    <div class="container">
+        <header>
+            <h1>🌧️ 聽見下雨的聲音</h1>
+            <p class="subtitle">感官調節即服務（Vibe as a Service）</p>
+            <div class="weather-badge">
+                當前環境感知：<strong>{{ '雨天 🌧️' if weather == 'Rainy' else '晴天 ☀️' }}</strong>
             </div>
-            {% endif %}
-        </section>
+        </header>
 
-        <section class="bg-slate-800/50 backdrop-blur border border-slate-700/60 p-8 rounded-3xl shadow-xl">
-            <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
-                <i class="fa-solid fa-wand-magic-sparkles text-orange-400"></i> DALL-E 圖片生成
-            </h2>
-            <p class="text-xs text-slate-400 mb-6">輸入畫面描述（建議用英文），由 AI 為你現場繪製高解析度圖像。</p>
+        <form action="/" method="POST" class="mood-form">
             
-            <form method="POST" class="space-y-4">
-                <input type="hidden" name="action_type" value="image">
-                <textarea name="prompt" rows="3" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-orange-500" placeholder="描述你想看見的畫面... 例如：A futuristic city with flying cars, cyber punk style, hyper realistic" required></textarea>
-                <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-semibold py-3 px-4 rounded-xl transition-all text-sm">
-                    現場繪製圖片 <i class="fa-solid fa-paint-brush ml-1"></i>
-                </button>
-            </form>
+            <div class="form-group">
+                <label for="weather-select">模擬環境氣象：</label>
+                <select name="weather" id="weather-select" onchange="this.form.submit()">
+                    <option value="Clear" {{ 'selected' if weather == 'Clear' }}>☀️ 晴天 (Clear)</option>
+                    <option value="Rainy" {{ 'selected' if weather == 'Rainy' }}>🌧️ 雨天 (Rainy)</option>
+                </select>
+            </div>
 
-            {% if image_result %}
-            <div class="mt-6 text-center">
-                <h4 class="text-xs font-bold text-orange-400 uppercase tracking-wider mb-3 text-left">生成畫作：</h4>
-                <div class="inline-block relative overflow-hidden rounded-2xl shadow-2xl border border-slate-700">
-                    <img src="{{ image_result }}" alt="AI 生成圖片" class="max-w-full h-auto max-h-72 object-contain">
+            <main class="mood-section">
+                <h3>現在的你，心境如何？</h3>
+                
+                <div class="button-grid">
+                    <button type="submit" name="mood" value="Relaxed" class="mood-btn">🌱 悠閒放鬆</button>
+                    <button type="submit" name="mood" value="Tired" class="mood-btn">🥱 極度疲憊</button>
+                    <button type="submit" name="mood" value="Anxious" class="mood-btn">🤯 焦慮爆炸</button>
+                    <button type="submit" name="mood" value="Lazy" class="mood-btn">☕ 慵懶無聊</button>
+                    <button type="submit" name="mood" value="Happy" class="mood-btn">🥳 快樂活力</button>
+                    <button type="submit" name="mood" value="Calm" class="mood-btn">📖 平靜孤獨</button>
+                    <button type="submit" name="mood" value="Emo" class="mood-btn">🩹 感性傷心</button>
                 </div>
-                <p class="text-xs text-slate-500 mt-2"><i class="fa-solid fa-info-circle"></i> 圖片由 OpenAI DALL-E 3 即時生成</p>
+
+                <div class="focus-zone">
+                    <button type="submit" name="mood" value="Focus" class="focus-btn">🧠 進入心流（讀書/趕報告專用）</button>
+                </div>
+            </main>
+        </form>
+
+        <hr>
+
+        <section class="player-section">
+            <div class="music-card">
+                <h3>🎵 系統為你當下氛圍調頻的專屬生活 BGM：</h3>
+                
+                <div class="video-container">
+                    <iframe 
+                        width="560" 
+                        height="315" 
+                        src="{{ music_url }}" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
             </div>
-            {% endif %}
         </section>
-
-    </main>
-
-    <footer class="text-center text-xs text-slate-600 py-12 border-t border-slate-800/60 mt-12">
-        <p>&copy; 2026 {{ info.name }} AI Workspace. All Rights Reserved.</p>
-    </footer>
+    </div>
 
 </body>
 </html>
